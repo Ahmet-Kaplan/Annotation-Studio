@@ -1,102 +1,52 @@
 default:
-  site_name: 'Public'
-  welcome_message: "Welcome to Annotation Studio 2.5"
+  site_name:
+  welcome_message: "Welcome to Annotation Studio"
+  welcome_blurb: "Annotation Studio is a web application that supports close reading and collaborative interpretation of online documents. For more information on the project click the About link at the top. If you don’t have an account yet, click Register at the top of this page otherwise just log in."
   site_color: '#CCC'
   brand: 'shared/default_brand'
+  home_banner: 'cove_home_banner.jpg'
 public:
-  site_name: 'Public'
-  welcome_message: "Welcome to Annotation Studio 2.5"
+  site_name: Public
+  welcome_message: "Welcome to Annotation Studio"
+  welcome_blurb: "Annotation Studio is a web application that supports close reading and collaborative interpretation of online documents. For more information on the project click the About link at the top. If you don’t have an account yet, click Register at the top of this page otherwise just log in."
   site_color: '#CCC'
-amherst:
-  site_name: 'Amherst'
-  welcome_message: "Welcome to Annotation Studio 2.5"
-  site_color: '#2C0463'
-andersen:
-  site_name: 'Andersen'
-  welcome_message: "Welcome to Annotation Studio 2.5"
-  site_color: '#997F3D'
-barnard:
-  site_name: 'Barnard College'
-  welcome_message: "Welcome to Annotation Studio 2.5 at <strong>Barnard College</strong>"
-  site_color: '#005596'
-breck:
-  site_name: 'Breck'
-  welcome_message: "Welcome to Annotation Studio 2.5"
-  site_color: '#000080'
-bucknell:
-  site_name: 'Bucknell University'
-  welcome_message: "Welcome to Annotation Studio 2.5 at <strong>Bucknell University</strong>"
-  site_color: '#00337F'
-demo:
-  site_name: 'Demo'
-  welcome_message: "Welcome to Annotation Studio 2.5"
-  site_color: '#BDBDBD'
-gatech:
-  site_name: 'Georgia Tech'
-  welcome_message: "Welcome to Annotation Studio 2.5"
-  site_color: '#B3A369'
-grinnell:
-  site_name: 'Grinnell College'
-  welcome_message: "Welcome to Annotation Studio 2.5"
-  site_color: '#DA291C'
-harvard:
-  site_name: 'Harvard'
-  welcome_message: "Welcome to Annotation Studio 2.5"
-  site_color: '#A51C30'
-humboldt:
-  site_name: 'HU Berlin'
-  welcome_message: "Welcome to Annotation Studio 2.5"
-  site_color: '#010963'
-merchant-of-venice:
-  site_name: 'Merchant of Venice'
-  welcome_message: "Welcome to Annotation Studio 2.5"
-  site_color: '#D2B48C'
-mit:
-  site_name: 'MIT'
-  welcome_message: "Welcome to Annotation Studio 2.5 at <strong>MIT</strong>"
-  site_color: '#A31F34'
-  brand: 'shared/default_brand'
-newhaven:
-  site_name: 'University of New Haven'
-  welcome_message: "Welcome to Annotation Studio 2.5 at <strong>University of New Haven</strong>"
-  site_color: '#FFD700'
-stonybrook:
-  site_name: 'Stony Brook'
-  welcome_message: "Welcome to Annotation Studio 2.5 at <strong>Stony Brook University</strong>"
-  site_color: '#990000'
-uma:
-  site_name: 'UMass Amherst'
-  welcome_message: "Welcome to Annotation Studio 2.5 <strong>University of Massachusetts, Amherst</strong>"
-  site_color: '#881c1c'
-umb:
-  site_name: 'UMass Boston'
-  welcome_message: "Welcome to Annotation Studio 2.5 at <strong>University of Massachusetts, Boston</strong>"
-  site_color: '#38197A'
-uw:
-  site_name: 'University of Washington'
-  welcome_message: "Welcome to Annotation Studio 2.5 at <strong>University of Washington</strong>"
-  site_color: '#B7A57A'
-vassar:
-  site_name: 'Vassar'
-  welcome_message: "Welcome to Annotation Studio 2.5 at <strong>Vassar College</strong>"
-  site_color: '#800000'
-washjeff:
-  site_name: 'Washington and Jefferson'
-  welcome_message: "Welcome to Annotation Studio 2.5 at <strong>Washington and Jefferson College</strong>"
-  site_color: '#FF0000'
-wellesley:
-  site_name: 'Wellesley'
-  welcome_message: "Welcome to Annotation Studio 2.5 at <strong>Wellesley College</strong>"
-  site_color: '#002776'
-wheatoncollege:
-  site_name: 'Wheaton College'
-  welcome_message: "Welcome to Annotation Studio 2.5 at <strong>Wheaton College</strong>"
-  site_color: '#FFA5000'
-wit:
-  site_name: 'WIT'
-  welcome_message: "Welcome to Annotation Studio 2.5 at <strong>Wentworth Institute of Technology</strong>"
-  site_color: '#FFD700'
-wlu:
-  site_name: 'WLU'
-  welcome_message: "Welcome to Annotation Studio 2.5 at <strong>Washington and Lee University</strong>"
-  site_color: '#F169E1'
+  home_banner: 'cove_home_banner.jpg'
+studio.covecollective.org:
+  site_name: COVE
+  oauth_provider: NAVSA
+  welcome_message: 'Sign in above, or via <a href="http://navsa.org">NAVSA</a>'
+  welcome_blurb: 'COVE Studio is the annotation and peer review workbench for COVE edition documents, which you can view on the <a href="http://dev-rc-distro.pantheonsite.io">COVE editions</a> website.'
+  site_color: '#279eb2'
+  home_banner: 'cove_home_banner.jpg'
+  brand: 'shared/cove_brand'
+staging.covecollective.org:
+  site_name: COVE Staging
+  oauth_provider: NAVSA
+  welcome_message: 'Sign in above, or via <a href="http://navsa.org">NAVSA</a>'
+  welcome_blurb: 'COVE Studio is the annotation and peer review workbench for COVE edition documents, which you can view on the <a href="http://dev-rc-distro.pantheonsite.io">COVE editions</a> website.'
+  site_color: '#279eb2'
+  home_banner: 'cove_home_banner.jpg'
+  brand: 'shared/cove_brand'
+navsaconference.covecollective.org:
+  site_name: NAVSA Conference
+  welcome_message: 'Welcome to Conference COVE Studio'
+  welcome_blurb: 'COVE Studio is a web application that supports close reading and collaborative interpretation of online documents.'
+  site_color: '#671900'
+  home_banner: 'navsa_2020.png'
+  brand: 'shared/navsa_conference_brand'
+bavs-staging.covecollective.org:
+  site_name: BAVS
+  oauth_provider: BAVS
+  welcome_message: 'Sign in via <a href="https://bavs.ac.uk/">BAVS</a>'
+  welcome_blurb: 'Welcome the BAVS imprint of COVE, The Central Online Victorian Educator. COVE is a scholar-driven open-access platform that publishes peer-reviewed Victorian material. It is maintained and supported by NAVSA, BAVSA, AVSA and a number of independent institutions, and aims to make access to diverse scholarly editions and Victorian voices more widely available. Although all peer-reviewed material is open access, we charge a modest amount for use of our tools (for more information, see COVE Tools and Anthology Builder below). To facilitate its use throughout the COVID-19 pandemic, BAVS are offering some funds to support student access to develop specific projects. For more information on this, and for any other BAVS-specific issues regarding COVE use, please contact <a href="mailto:Joanna.taylor@manchester.ac.uk">Joanna Taylor</a>. If you are interested in getting involved with COVE, please contact General Editor <a href="mailto:felluga@purdue.edu">Dino Franco Felluga</a>.'
+  site_color: '#279eb2'
+  home_banner: 'bavs-banner.jpg'
+  brand: 'shared/bavs_brand'
+bavs.covecollective.org:
+  site_name: BAVS
+  oauth_provider: BAVS
+  welcome_message: 'Sign in via <a href="https://bavs.ac.uk/">BAVS</a>'
+  welcome_blurb: 'Welcome the BAVS imprint of COVE, The Central Online Victorian Educator. COVE is a scholar-driven open-access platform that publishes peer-reviewed Victorian material. It is maintained and supported by NAVSA, BAVSA, AVSA and a number of independent institutions, and aims to make access to diverse scholarly editions and Victorian voices more widely available. Although all peer-reviewed material is open access, we charge a modest amount for use of our tools (for more information, see COVE Tools and Anthology Builder below). To facilitate its use throughout the COVID-19 pandemic, BAVS are offering some funds to support student access to develop specific projects. For more information on this, and for any other BAVS-specific issues regarding COVE use, please contact <a href="mailto:Joanna.taylor@manchester.ac.uk">Joanna Taylor</a>. If you are interested in getting involved with COVE, please contact General Editor <a href="mailto:felluga@purdue.edu">Dino Franco Felluga</a>.'
+  site_color: '#279eb2'
+  home_banner: 'bavs-banner.jpg'
+  brand: 'shared/bavs_brand'

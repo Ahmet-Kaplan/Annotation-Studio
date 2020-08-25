@@ -1,4 +1,4 @@
-require_relative 'boot'
+require File.expand_path('../boot', __FILE__)
 
 # Pick the frameworks you want:
 require "active_record/railtie"
@@ -20,6 +20,7 @@ module AnnotationStudio
     config.autoload_paths += %W(#{config.root}/lib)
     config.encoding = "utf-8"
     config.filter_parameters += [:password]
+    config.active_record.raise_in_transactional_callbacks = true
 
     # Enable escaping HTML in JSON.
     config.active_support.escape_html_entities_in_json = true
@@ -35,7 +36,7 @@ module AnnotationStudio
     # parameters by using an attr_accessible or attr_protected declaration.
     # config.active_record.whitelist_attributes = true
 
-    config.assets.precompile += %w(active_admin.js active_admin.css)
+    config.assets.precompile += %w(active_admin.css active_admin.js)
 
     # Enable the asset pipeline
     config.assets.enabled = true
@@ -43,9 +44,9 @@ module AnnotationStudio
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '2.0'
 
-    config.assets.initialize_on_precompile = false
+		config.assets.initialize_on_precompile = false
 
-    # sanitization allowed tags
+		# sanitization allowed tags
     config.action_view.sanitized_allowed_attributes = ["href", "src", "width", "height", "alt", "cite", "datetime", "title", "class", "name", "xml:lang", "abbr", "controls"]
     config.action_view.sanitized_allowed_tags = ["strong", "em", "b", "i", "p", "code", "pre", "tt", "samp", "kbd", "var", "sub", "sup", "dfn", "cite", "big", "small", "address", "hr", "br", "div", "span", "h1", "h2", "h3", "h4", "h5", "h6", "ul", "ol", "li", "dl", "dt", "dd", "abbr", "acronym", "a", "img", "blockquote", "del", "ins", "table", "tr", "td", "video", "iframe"]
 
@@ -61,6 +62,5 @@ module AnnotationStudio
         resource '/api/*', headers: :any, methods: [:get, :post, :options]
       end
     end
-
   end
 end

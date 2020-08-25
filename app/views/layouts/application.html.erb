@@ -5,7 +5,7 @@
     <title><%= ENV["PAGE_TITLE"] %> :: <%= yield(:page_title) %></title>
     <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
     <!--[if lt IE 9]>
-    <script src="https://html5shim.googlecode.com/svn/trunk/html5.js" type="text/javascript"></script>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js" type="text/javascript"></script>
     <![endif]-->
     <%= csrf_meta_tags %>
     <%= stylesheet_link_tag "application", :media => "all" %>
@@ -15,7 +15,7 @@
     <link rel="shortcut icon" type="image/png" href="/<%= ENV["FAVICON"] %>" sizes="32x32" />
     <%= javascript_include_tag "application" %>
     <% if ENV["USE_TYPEKIT"] == true %>
-      <script type="text/javascript" data-name="typekit" data-src="//use.typekit.net/<%= ENV["TYPEKIT_CODE"] %>"></script>
+      <script type="text/javascript" src="//use.typekit.net/<%= ENV["TYPEKIT_CODE"] %>"></script>
       <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
     <% end %>
 	<script type="text/javascript">
@@ -29,19 +29,19 @@
 
     <nav class="navbar navbar-inverse navbar-fixed-top" id="navbar">
       <div class="container">
-        <%= render_brand %>
+        <%= render "#{ $DOMAIN_CONFIG['brand'] }" %>
       </div>
     </nav>
 
     <% if !current_user.nil?  %>
     <nav class="navmenu navmenu-inverse navmenu-fixed-left offcanvas" id="mainmenu" role="navigation">
-      <% unless params[:controller].include?('registrations') || params[:controller].include?('confirmations') || params[:controller].include?('terms')  || params[:controller].include?('high_voltage') %>
+      <% unless params[:controller].include?('registrations') %>
         <%= render "#{params[:controller]}/leftnav" %>
       <% end %>
     </nav>
 
     <nav class="navmenu navmenu-inverse navmenu-fixed-right offcanvas" id="toolsmenu" role="navigation">
-      <% unless params[:controller].include?('registrations') || params[:controller].include?('confirmations') || params[:controller].include?('terms')  || params[:controller].include?('high_voltage') %>
+      <% unless params[:controller].include?('registrations') %>
         <%= render "#{params[:controller]}/rightnav" %>
       <% end %>
     </nav>
@@ -50,37 +50,12 @@
       <div class="container">
         <div class="row">
           <div class="col-md-8">
-            <label class="navbar-switch" id="leftburger">
-              <input type="checkbox" class="" data-toggle="offcanvas"  data-target="#mainmenu"  title="Navigation" />
-              <span class="navbar-toggle">
-                <svg class="bi bi-info-square" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                <path fill-rule="evenodd" d="M14 1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
-                <path d="M8.93 6.588l-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588z"/>
-                <circle cx="8" cy="4.5" r="1"/></svg>
-              </span>
-            </label>
+            <button type="button" class="navbar-toggle" data-toggle="offcanvas" data-recalc="false" data-target="#mainmenu" id="leftburger" title="Navigation"><i class="fa fa-bars"></i></button>
             <%= render "shared/breadcrumbs" %>
           </div>
           <div class="col-md-4">
             <%= render "shared/annotation_header" %>
-            <label class="navbar-switch" id="rightburger">
-              <input type="checkbox" class=" pull-right" data-toggle="offcanvas" data-target="#toolsmenu"  title="Tools" />
-              <span class="navbar-toggle">
-                <svg class="bi bi-filter" width="1em" height="1em" viewBox="0 -4 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                <path fill-rule="evenodd" d="M6 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z"/>
-                </svg>Filters<i class="fa fa-circle" aria-hidden="true"></i>
-              </span>
-            </label>
-          </div>
-        </div>
-      </div>
-    </nav>
-    <% elsif current_page?(page_path('terms')) || current_page?(page_path('privacypolicy')) || current_page?(page_path('cookiepolicy')) %>
-    <nav class="navbar navbar-default navbar-fixed-top hidden-xs" id="lower-navbar">
-      <div class="container">
-        <div class="row">
-          <div class="col-md-8">
-            <%= render "shared/breadcrumbs" %>
+            <button type="button" class="navbar-toggle pull-right" data-toggle="offcanvas" data-recalc="false" data-target="#toolsmenu" id="rightburger" title="Tools"><i class="fa fa-gears"></i></button>
           </div>
         </div>
       </div>
@@ -89,9 +64,9 @@
 
 	<% if params[:controller] == 'devise/sessions' %>
 	<div class="home-image">
-		<%= image_tag(home_banner, { alt: 'Cover Photo' }) %>
+		<%= image_tag ("#{$DOMAIN_CONFIG['home_banner']}") %>
 	</div>
-<% end %>
+  <% end %>
     <div class="container">
       <%= render partial: "shared/noscript" %>
       <%= render partial: "shared/flash_messages", flash: flash %>
@@ -106,31 +81,27 @@
     _gaq.push(['_trackPageview']);
 
     (function() {
-        var ga = document.createElement('script'); ga.type = 'text/plain'; ga.async = true;
-        gasrc = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-        ga.setAttribute('data-src', gasrc);
-        ga.setAttribute('data-type', 'text/javascript');
-        ga.setAttribute('data-name', 'google-analytics');
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
     })();
     </script>
     <script type="text/javascript">
     $('document').ready(function() {
-      $('#mainmenu').bind('show.bs.offcanvas',function(){checkmark('left',true);});
-      $('#mainmenu').bind('hide.bs.offcanvas',function(){checkmark('left',false);});
-      $('#toolsmenu').bind('show.bs.offcanvas',function(){checkmark('right',true);});
-      $('#toolsmenu').bind('hide.bs.offcanvas',function(){checkmark('right',false);});
+      // $('#lower-navbar').affix({
+      //   offset: {top: 50}
+      // });
+      // $('#mainmenu').offcanvas({
+      //   disableScrolling: false,
+      //   autohide: true,
+      // });
+      // $('#toolsmenu').offcanvas({
+      //   disableScrolling: false,
+      //   autohide: true,
+      // });
+      // $('#mainmenu').offcanvas();
+      // $('#toolsmenu').offcanvas();
     });
-      function checkmark(side,on) {
-        if(side=='left')
-          var el = $('#leftburger span');
-        else if(side=='right')
-          var el = $('#rightburger span');
-        if(on==true)
-          el.addClass("navbutton-pushed");
-        else
-          el.removeClass("navbutton-pushed");
-      }
     </script>
 </body>
 </html>

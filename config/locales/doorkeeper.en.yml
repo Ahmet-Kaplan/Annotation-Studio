@@ -33,6 +33,7 @@ en:
       help:
         confidential: 'Application will be used where the client secret can be kept confidential. Native mobile apps and Single Page Apps are considered non-confidential.'
         redirect_uri: 'Use one line per URI'
+        native_redirect_uri: 'Use %{native_redirect_uri} for local tests'
         blank_redirect_uri: "Leave it blank if you configured your provider to use Client Credentials, Resource Owner Password Credentials or any other grant type that doesn't require redirect URI."
         scopes: 'Separate scopes with spaces. Leave blank to use the default scopes.'
       edit:
@@ -51,7 +52,7 @@ en:
         title: 'New Application'
       show:
         title: 'Application: %{name}'
-        application_id: 'UID'
+        application_id: 'Application Id'
         secret: 'Secret'
         secret_hashed: 'Secret hashed'
         scopes: 'Scopes'
@@ -115,6 +116,9 @@ en:
         invalid_client: 'Client authentication failed due to unknown client, no client authentication included, or unsupported authentication method.'
         invalid_grant: 'The provided authorization grant is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client.'
         unsupported_grant_type: 'The authorization grant type is not supported by the authorization server.'
+
+        # Password Access token errors
+        invalid_resource_owner: 'The provided resource owner credentials are not valid, or resource owner cannot be found'
 
         invalid_token:
           revoked: "The access token was revoked"

@@ -1,55 +1,7 @@
-<div class="well devise">
+	<ul class="list-group" id="omniauth-links">
+	  <%- resource_class.omniauth_providers.each do |provider| %>
+	  <li class="list-group-item"><%= link_to "Log in through #{I18n.t provider.to_sym, scope: [:devise, :omniauth]}", root_url(:protocol => "https").gsub(/\/$/, "") + omniauth_authorize_path(resource_name, provider), :class => "btn btn-default" %></li>
+	  <% end -%>
 
-    <h4>Log into <span style="color:<%= $DOMAIN_CONFIG['site_color'] %>;"><%= $DOMAIN_CONFIG['site_name'] %></span></h4>
-    <%= form_for(resource, :as => resource_name, :url => session_path(resource_name), :html => { :role => "form"}) do |f| %>
-        <%= render "devise/shared/error_messages" %>
-
-        <div class="form-group">
-            <%= f.label :email %>
-            <%= f.email_field :email, :class => "form-control" %>
-        </div>
-
-        <div class="form-group">
-            <%= f.label :password %>
-            <%= f.password_field :password, :class => "form-control" %>
-        </div>
-
-        <!-- Registering with a group invitation attached -->
-        <% if params[:invite_token] %>
-            <%= hidden_field_tag :invite_token, params[:invite_token] %>
-        <% end %>
-
-        <% if session[:ideaspace] && !request.referer.nil? %>
-            <% session[:return_to] ||= request.referer + '?loggedin=true&tenant=' + Apartment::Tenant.current %>
-        <% end %>
-
-        <div><%= f.submit "Log in", :class => "btn btn-default btn-default-primary log-in-button" %></div>
-
-    <% end %>
-</div><!--/well -->
-<div class="well devise">
-    <h4>Or find your domain</h4>
-    <form name="domain-form">
-      <div class="form-group">
-          <select id="login-chooser" class="form-control">
-          <% if !Apartment::tenant_names.blank? %>
-            <% for database in Apartment::tenant_names.map{|d| d.downcase}.sort! %>
-              <option value="https://<%= database %>.annotationstudio.org"
-                <% if database == Apartment::Tenant.current %>
-                  selected
-                <% end %>
-                >https://<%= database %>.annotationstudio.org</option>
-            <% end %>
-          <% end %>
-          </select>
-      </div>
-    </form>
-</div><!--/well -->
-<%= render "/devise/links" %>
-<script type="text/javascript">
-$("document").ready(function(){
-    $("#login-chooser").change(function(){
-        window.location = $(this).val();
-    });
-});
-</script>
+	  <li class="list-group-item"><a target="navsa" href="https://www.navsa.org/members/join-navsa/">Not a NAVSA member?</a></li>
+	</ul>

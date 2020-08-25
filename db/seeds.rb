@@ -11,10 +11,10 @@ default_tenants = ['public', 'www']
 default_tenants.each do |tenant|
   if tenant != 'public'
     Tenant.where(database_name: tenant, domain: "#{tenant}.localhost").first_or_create
-    Apartment::Tenant.switch(tenant)
+    Apartment::Database.switch(tenant)
   else
     # Use the default 'public' schema
-    Apartment::Tenant.reset
+    Apartment::Database.reset
   end
 
   # Create initial groups for the Annotation Studio application
@@ -35,6 +35,7 @@ default_tenants.each do |tenant|
 
   admin = AdminUser.where(email: 'admin@example.com').first_or_initialize
   admin.password = admin.password_confirmation = password
+  # admin.agreement = true
   admin.save
 
   puts "Created AdminUser: 'admin@example.com', password: #{password}"
@@ -46,6 +47,7 @@ default_tenants.each do |tenant|
       state: 'published',
   ).first_or_create
 
+  document.rep_group_list = 'student'
   document.save
 end
 

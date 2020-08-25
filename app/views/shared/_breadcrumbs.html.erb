@@ -2,14 +2,37 @@
 <ol class="breadcrumb breadcrumb-inverse hidden-xs<%= " second-line" if second_line %>">
   <% if current_page?(dashboard_path) || current_page?(root_path) %>
     <li class="active">Dashboard</li>
-  <% elsif !current_page?(page_path('cookiepolicy')) && !current_page?(page_path('terms')) && !current_page?(page_path('privacypolicy')) %>
+  <% else %>
     <li><%= link_to("Dashboard", "/dashboard", :id => "dashboard-link") %></li>
+  <% end %>
+
+  <% if current_page?(users_path) %>
+    <li class="active">Users</li>
+  <% end %>
+
+  <% if current_page?(anthologies_path) %>
+    <li class="active">Anthologies</li>
+  <% elsif params[:controller] == 'anthologies' %>
+    <li><%= link_to("Anthologies", "/anthologies", :id => "documents-link") %></li>
+    <% if params[:action] == 'show' %>
+      <li class="active"><%= @anthology.name %></li>
+    <% elsif params[:action] == 'new' %>
+      <li class="active">New Anthology</li>
+    <% elsif params[:action] == 'edit' %>
+      <li class="active">Editing: <%= @anthology.name %></li>
+    <% end %>
   <% end %>
 
   <% if current_page?(documents_path) %>
     <li class="active">Documents</li>
-  <% elsif params[:controller] == 'documents' && !@document.nil? %>
+  <% elsif params[:controller] == 'documents' %>
+    <% if params[:anthology_id].present? %>
+    <li><%= link_to("Anthologies", "/anthologies", :id => "documents-link") %></li>
+    <li><%= link_to(params[:anthology_id],anthology_path(params[:anthology_id])) %></li>
+    <% end %>
+    <% unless params[:anthology_id].present? %>
     <li><%= link_to("Documents", "/documents", :id => "documents-link") %></li>
+  <% end %>
     <% if params[:action] == 'show' %>
       <li class="active"><%= @document.title %></li>
     <% elsif params[:action] == 'preview' %>
@@ -26,7 +49,8 @@
   <% end %>
 
   <% if current_page?(groups_path) %>
-    <li class="active">Groups</li>
+    <li class="active"><%= ENV["CLASS_TERM_PLURAL"] %> and <%= ENV["GROUP_TERM_PLURAL"] %></li>
+		<li class="active">Groups</li>
   <% elsif params[:controller] == 'groups' && !@group.nil? %>
     <li><%= link_to("Groups", "/groups", :id => "documents-link") %></li>
     <% if params[:action] == 'show' %>
@@ -41,16 +65,4 @@
   <% if current_page?(edit_user_registration_path) %>
     <li class="active">My Profile</li>
   <% end %>
-
-  <% if current_page?(page_path('terms')) %>
-    <li class="active">Terms and Conditions</li>
-    <li>See also our our <%= link_to("Privacy Policy", page_path('privacypolicy')) %> and <%= link_to("Cookie Policy", page_path('cookiepolicy')) %>.</li>
-  <% elsif current_page?(page_path('privacypolicy')) %>
-    <li class="active">Privacy Policy</li>
-    <li>See also our our <%= link_to("Cookie Policy", page_path('cookiepolicy')) %> and <%= link_to("Terms of Service", page_path('terms')) %>.</li>
-  <% elsif current_page?(page_path('cookiepolicy')) %>
-    <li class="active">Cookie Policy</li>
-    <li>See also our our <%= link_to("Privacy Policy", page_path('privacypolicy')) %> and <%= link_to("Terms of Service", page_path('terms')) %>.</li>
-  <% end %>
-
 </ol>

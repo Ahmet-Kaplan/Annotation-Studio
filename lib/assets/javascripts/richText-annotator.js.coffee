@@ -9,7 +9,7 @@ class Annotator.Plugin.RichText extends Annotator.Plugin
     editor_enabled: true
     tinymce:
       selector: "li.annotator-item textarea",
-      plugins: "media image link code paste",
+      plugins: "media image link code melcatalog paste",
       link_list: false,
       target_list: false,
       rel_list: false,
@@ -39,12 +39,12 @@ class Annotator.Plugin.RichText extends Annotator.Plugin
       load: @updateEditor
 
     annotator.subscribe "annotationEditorShown", ->
-      $(annotator.editor.element).find(".mce-tinymce")[0].style.display = "block"
+      # $(annotator.editor.element).find(".mce-tinymce")[0].style.display = "block"
       $(annotator.editor.element).find(".mce-container").css "z-index", 3000000000
       annotator.editor.checkOrientation()
 
     annotator.subscribe "annotationEditorHidden", ->
-      $(annotator.editor.element).find(".mce-tinymce")[0].style.display = "none"
+      # $(annotator.editor.element).find(".mce-tinymce")[0].style.display = "none"
 
 
     #set listener for tinymce;

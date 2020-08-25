@@ -3,77 +3,67 @@
 <%= content_for :page_title, "Sign in" %>
 <div class="row">
   <div class="col-md-12" id="blurb">
-      <% if ENV["GLOBAL_ALERT"] != "" && !session[:ideaspace] %>
+      <% if ENV["GLOBAL_ALERT"] != "" %>
       <div class="alert alert-dismissible alert-<%= ENV["ALERT_LEVEL"] %>" role="alert">
         <%= ENV["GLOBAL_ALERT"].html_safe %>
         <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
       </div>
       <% end %>
-      <% if ENV["SHOW_WELCOME_MESSAGE"] == "true" && !session[:ideaspace] %>
+      <% if ENV["SHOW_WELCOME_MESSAGE"] == true %>
       <div class="alert alert-success alert-dismissible" role="alert">
         <%= $DOMAIN_CONFIG['welcome_message'].html_safe %>
         <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
       </div>
       <% end %>
-      <% if session[:ideaspace] %>
-        <div class="alert alert-warning alert-dismissible" role="alert">
-          To access Idea Space, please sign in to Annotation Studio.
-          <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-        </div>
-      <% end %>
   </div>
 </div>
-
-<% if session[:ideaspace] %>
-  <div class="row">
-    <div class="col-md-6 col-md-offset-4">
-      <%= render "/devise/sessions/sign_in" %>
-    </div>
-  </div>
-<% end %>
-
-<% if ENV["SHOW_DOMAIN_MESSAGE"] == "true" && !session[:ideaspace] %>
+<% if ENV["SHOW_DOMAIN_MESSAGE"] == true %>
 <div class="row">
-  <div class="col-md-8 col-md-offset-2">
-    <div class="panel panel-default">
-      <div class="panel-body">
-      <h1>&#x1F4DD; Introducing <strong>Annotation Studio 3.2</strong></h1>
-        <hr />
-        Annotation Studio 3.2 (August 20, 2020)
-        <h4>What's new in 3.2?</h4>
-        <ul>
-          <li>Restored option to upload PDF and Word documents.</li>
-          <li>Bugfixes and minor improvements.</li>
-        </ul>
-        <hr />
-        Annotation Studio 3.1 (June 10, 2020)
-        <h4>What's new in 3.1?</h4>
-        <ul>
-          <li>New filtering options for annotations on document pages.</li>
-          <li>Improved document metadata view.</li>
-          <li>Bugfixes and minor improvements.</li>
-        </ul>
-        <hr />
-        Annotation Studio 3.0 (June 1, 2020)
-        <h3>We have just released the latest version of Annotation Studio, featuring a new Groups system and several bugfixes.</h3>
-        <h4>What are Groups?</h4>
-        <ul>
-          <li>Groups replace the Classes from previous versions of Annotation Studio. All of your Classes have been migrated to Groups.</li>
-          <li>Groups now keep track of their memberships, so you can easily add or remove people from your Group.</li>
-          <li>Assigning documents to Groups is as easy as picking from a dropdown menu.</li>
-        </ul>
-        Please let us know if you have questions or feedback at <a href="mailto:annotationstudio-support@mit.edu">annotationstudio-support@mit.edu</a> or on the <a href="http://support.annotationstudio.org/">support forum</a>.
-
-
-        <br /><br />
-        <h4>We need your support!</h4>
-
-        As you might know, Annotation Studio has been developed with funds from the National Endowment for the Humanities (NEH) and MIT-internal support. Our goal has always been to create a flexible and easy to use educational tool for collaborative close reading and annotation and offer it free to educators and students. Over time, costs for hosting and maintenance have increased and it has been challenging to secure the necessary funds to cover the ongoing costs for running Annotation Studio, to develop updates and integrate security and bug fixes, let alone the development of new functionality.
-        Therefore, we would very much appreciate your support which allows us to keep the project free for all users. For your donation, please contact us at <a href="mailto:annotationstudio-support@mit.edu">annotationstudio-support@mit.edu</a>.
-        <br /><br />
-        <h5>The Annotation Studio Team</h5>
-        </div>
-    </div>
+  <div class="col-md-8" id="blurb">
+    <p>
+      <legend><%= $DOMAIN_CONFIG['welcome_blurb'].html_safe %></legend>
+    </p>
   </div>
 </div><!--/row -->
 <% end %>
+
+<div class="modal fade" tabindex="-1" role="dialog" id="email-login" style="margin-top: 50px;">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Sign in with email</h4>
+      </div>
+      <div class="modal-body">
+
+        <h4>Log in</h4>
+        <%= form_for(resource, :as => resource_name, :url => session_path(resource_name), :html => { :role => "form"}) do |f| %>
+          <%= devise_error_messages! %>
+          <div class="form-group">
+            <%= f.label :email %>
+            <%= f.email_field :email, :class => "form-control" %>
+          </div>
+          <div class="form-group">
+            <%= f.label :password %>
+            <%= f.password_field :password, :class => "form-control" %>
+          </div>
+          <%= f.submit "Log in", :class => "btn btn-default" %>
+          <% end %>
+
+      </div>
+      <div class="modal-footer">
+        <%= render "/devise/links" %>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<script type="text/javascript">
+
+ $(document).ready(function() {
+     if(window.location.href.indexOf('#email-login') != -1) {
+         $('#spinnermodal').modal('hide');
+         $('#email-login').modal('show');
+     }
+ });
+</script>

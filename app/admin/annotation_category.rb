@@ -1,9 +1,9 @@
 ActiveAdmin.register AnnotationCategory do
   permit_params :name, :hex, :css_classes
 
-  menu false
+	menu false
 
-  scope :all, :default => true
+	scope :all, :default => true
 
   filter :name
   filter :hex
@@ -24,5 +24,6 @@ ActiveAdmin.register AnnotationCategory do
       row :hex
       row :css_classes
     end
+    active_admin_comments
   end
 end

@@ -1,4 +1,4 @@
-class AdminUser < ApplicationRecord
-  devise :database_authenticatable,
+class AdminUser < ActiveRecord::Base
+  devise :database_authenticatable, 
          :recoverable, :rememberable, :trackable, :validatable
 end

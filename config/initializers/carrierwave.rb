@@ -1,4 +1,4 @@
-if Rails.env.to_s != 'development'
+if ['production', 'staging', 'public'].include?(Rails.env)
   CarrierWave.configure do |config|
     config.fog_credentials = {
       :provider               => 'AWS',

@@ -3,7 +3,7 @@
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
 body {
-  padding: 120px 0 100px 0;
+  padding: 100px 0 100px 0;
 }
 
 #document-text, #document-chapters {
@@ -18,6 +18,9 @@ body {
 	margin-top:10px;
 }
 
+#annotation-well {
+  // margin-top: 50px;
+}
 
 .nav > li {
   color: whitesmoke;
@@ -27,16 +30,16 @@ body {
 
   height: 80px;
 
-  .create-new-button {
+  .create-new-button {  
     margin-top: 10px;
   }
-
+  
   .pagination-controls {
     float: right;
     margin-right: 10px;
     margin-top: -10px;
-  }
-
+  }  
+  
 }
 
 #tool-sidebar {
@@ -44,75 +47,4 @@ body {
   a {
     margin-bottom: 10px;
   }
-}
-
-#rightburger.navbar-switch{
-  margin-top:10px;
-  margin-right:-16px;
-}
-
-.navbar-toggle {
-  background-color: none;
-  border: none;
-  color: #337ab7;
-  font-weight: normal;
-  padding: 5px 0 0 0;
-  &:hover{
-    color: #23527c;
-    cursor: pointer;
-    text-decoration: underline;
-  }
-  .fa-circle {
-    color:gold;
-    text-shadow: 0px 0px 1  px #444;
-    opacity: 0%;
-    font-size:8px;
-    vertical-align: top;
-  }
-  .bi-info-square{
-    font-size: 24px;  
-  }
-  .bi-filter{
-    margin-right: 3px;
-    font-size: 18px;
-    margin-top: -3px;
-  }
-}
-
-.navbutton-pushed{
-  color: #23527c;
-}
-.annotations-header{
-  padding-top: 16px;
-  padding-left: 8px;
-}
-
-.docmeta {
-  .meta-key{
-    font-weight: bold;
-  }
-  .meta-value{
-    margin-left: 1em;
-  }
-  .sourceurl {
-    max-width: 100%;
-    word-wrap: break-word;
-    display: inline-block;
-  }
-}
-
-.close-offcanvas{
-  &:hover{
-    color: white;
-    cursor: pointer;
-  }
-  color: #999;
-  font-size: 14px;
-  padding: 0px;
-  margin: 0px 0 -20px -26px;
-}
-
-.close-offcanvas-left{
-  float: right;
-  margin: 0px -26px -20px 0;
 }

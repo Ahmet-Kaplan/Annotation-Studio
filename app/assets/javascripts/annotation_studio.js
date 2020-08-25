@@ -3,9 +3,11 @@ var sidebar, subscriber, studio;
 var annotation_studio = {
   initialize_annotator: function() {
     sidebar = new Sidebar.App();
-    sidebar.token = token;
-    sidebar.filterTags = [];
+		sidebar.token = token;
+		sidebar.filterTags = [];
     sidebar.filterUsers = [];
+    //window.sidebar = sidebar;
+    //Backbone.history.start({pushState: true }); //, root: window.location});
 
     var studio = $('#textcontent').annotator(annotatorOptions).annotator('setupPlugins', {}, plugin_options());
     var optionsRichText = {
@@ -15,6 +17,8 @@ var annotation_studio = {
         'image_dimensions': false
       }
     };
+
+    studio.annotator("addPlugin", "MelCatalogue");
 
     subscriber = $('#textcontent').annotator().data('annotator');
 
@@ -34,10 +38,10 @@ var annotation_studio = {
     // Update all highlights with annotation object data
     subscriber.subscribe('annotationsLoaded', __bind(function(annotations) {
       annotations.map(inlineData); // copies values from object fields to the highlight spans data attributes.
-    }, this));
+		}, this));
 
-    // When annotator loads remote data, start filters 
-    subscriber.subscribe('annotationsLoaded', annotation_studio.getFilterData);
+		// When annotator loads remote data, start filters
+		subscriber.subscribe('annotationsLoaded', annotation_studio.getFilterData);
 
     // Add the UUID to the local annotation object and to the highlight span before saving
     subscriber.subscribe('beforeAnnotationCreated', annotation_studio.createUuid); // creates, if need be, and adds, both to object, and to highlight.
@@ -57,22 +61,35 @@ var annotation_studio = {
     sidebar.subscriber = subscriber;
   },
 	selectedTags: [],
-  loadOptions: function(overrides) {
+  loadOptions: function(overrides, user_select) {
     var annotation_categories = [];
     $.each($('#category-chooser button.active'), function(i, j) {
       annotation_categories.push($(j).data('annotation_category_id'));
     });
-
+    if(user_select){
     var settings = {
       'limit': 1000,
-      'group_ids': group_ids,
-      'user': filter_user,
-      'mode': annotation_studio.getMode(),
+      "groups": groups,
+      "subgroups": subgroups,
+      'user': user_select,
+      'mode': 'user',
       'context': search_context,
-      'host': location.host,
       'uri': [location.protocol, '//', location.host, location.pathname].join(''),
       'annotation_categories': annotation_categories
     };
+    }else {
+    var settings = {
+      'limit': 1000,
+      "groups": groups,
+      "subgroups": subgroups,
+      'user': filter_user,
+      'mode': annotation_studio.getMode(),
+			'context': search_context,
+			'host': location.host,
+      'uri': [location.protocol, '//', location.host, location.pathname].join(''),
+      'annotation_categories': annotation_categories
+    };
+    }
 
     if($('#tagsearchbox').val() && $('#tagsearchbox').val() != '') {
       settings.tags = $('#tagsearchbox').val();
@@ -90,21 +107,36 @@ var annotation_studio = {
   },
   refreshAnnotations: function() {
     subscriber.loadAnnotations(subscriber.plugins.Store.annotations);
-    $('#spinnermodal').modal('hide');
+    $('#spinnermodal').modal('show');
   },
-  filterAnnotations: function(overrides) {
-    var options = annotation_studio.loadOptions(overrides);
+  filterAnnotations: function(overrides, user_select) {
+    console.log("*** the user select is");
+    console.log(user_select);
+    var options = annotation_studio.loadOptions(overrides, user_select);
     var reload_data = annotation_studio.reloadAnnotations(options);
     var cleanup_document = annotation_studio.cleanupDocument();
     $.when(reload_data).then(cleanup_document).done(annotation_studio.refreshAnnotations(), annotation_studio.loadSidebar());
   },
   modeFilter: function(event) {
+    console.log('*** went into mode filter');
     var overrides = {
       mode: event.target.id
     };
     annotation_studio.filterAnnotations(overrides);
   },
+  userFilter: function(event) {
+    console.log('*** went into user filter');
+    var overrides = { };
+    console.log("*** event is");
+    console.log(event)
+    console.log("*** target is");
+    console.log(event.target)
+    console.log("*** value is");
+    console.log(event.target.value)
+    annotation_studio.filterAnnotations(overrides, event.target.value);
+  },
   tagFilter: function(event) {
+    $('*[data-role="remove"]').hide();
     var overrides = {};
     annotation_studio.filterAnnotations(overrides);
   },
@@ -132,6 +164,9 @@ var annotation_studio = {
   stopSpinner: function() {
     $('#spinnermodal').modal('hide');
   },
+  startSpinner: function() {
+    $('#spinnermodal').modal('show');
+  },
   // Update the sidebar with local annotation data
   loadSidebar: function(annotation) {
     setTimeout(function() {
@@ -155,8 +190,8 @@ var annotation_studio = {
     return true;
   },
   handleHash: function(annotation) {
-    var hash = window.location.hash;
-    function goToHighlight(){
+		var hash = window.location.hash;
+		function goToHighlight(){
       $('span[data-highlight="'+hash+'"]').click();
       $('html,body').animate({scrollTop: $(hash).offset().top - 150}, 500);
     }
@@ -245,7 +280,7 @@ var annotation_studio = {
     }
     else {
       annotation_studio.set_document_state('');
-    }
+		}
 
     $('#default_state').on('click', function(e) {
       e.preventDefault();
@@ -258,9 +293,9 @@ var annotation_studio = {
         $('#default_state').removeClass('active');
       });
     });
-  },
+	},
 
-  getFilterData: function() {
+	getFilterData: function() {
     var tag;
     var user;
     var annotations = subscriber.dumpAnnotations();
@@ -285,9 +320,9 @@ jQuery(function($) {
   if(!($('body').attr('id') == 'documents' && $('body').attr('class') == 'show')) {
     return;
   }
-
+  annotation_studio.startSpinner();
   annotation_studio.initialize_default_state_behavior();
-  if(annotation_studio.retrieve_document_state().length !== 0){
+	if(annotation_studio.retrieve_document_state().length !== 0){
     annotation_studio.initialize_annotator();
   }
 
@@ -310,9 +345,15 @@ jQuery(function($) {
   });
 
   $('.viewchoice').on('click', annotation_studio.modeFilter);
+  $('#users').on('change', annotation_studio.userFilter);
 
-  
-  // Filter initialization
+	var tagsElement = $("#annotation-tag-list");
+	$("body").on('click', '#annotation-tag-list input', annotation_studio.tagFilterCheck);
+
+  $('#tagsearchbox').tagsinput()
+  $('#tagsearchbox').on('itemAdded', annotation_studio.tagFilter);
+	$('#tagsearchbox').on('itemRemoved', annotation_studio.tagFilter);
+	// Filter initialization
   $('#usersearchbox').dropdown({
     clearable: true,
     placeholder: "Enter user(s) to filter on",
@@ -349,7 +390,8 @@ jQuery(function($) {
   });
 
   if(sidebar)
-    $(window).scroll(lazyShowAndHideAnnotations);
+
+  $(window).scroll(lazyShowAndHideAnnotations);
 
   // Toggle filtered variable
   $("body").on('click', '#visibleannotations', function(){
@@ -384,13 +426,15 @@ var inlineData = __bind(function(a) {
       a.highlights[i].dataset.uuid = a.uuid;
     }
     a.highlights[0].id = "hl"+ a.uuid;
-    a.highlights[0].title = a.username;
+    a.highlights[0].title = a.user;
     a.highlights[0].dataset.tags = a.tags.join(",");
-    a.highlights[0].dataset.group_ids = a.group_ids.join(",");
+    a.highlights[0].dataset.annotation_categories = a.annotation_categories.join(",");
+    a.highlights[0].dataset.groups = a.groups.join(",");
+    a.highlights[0].dataset.subgroups = a.subgroups.join(",");
     a.highlights[0].dataset.username = a.username;
     a.highlights[0].dataset.user = a.user;
-
-    if (a.annotation_categories) {
+		// a.highlights[0].dataset.text = a.text;
+		if (a.annotation_categories) {
       a.highlights[0].dataset.annotation_categories = a.annotation_categories.join(",");
     }
   }
@@ -398,5 +442,3 @@ var inlineData = __bind(function(a) {
     console.info("Annotation: " + a.uuid + "has no highlights.");
   }
 }, this);
-
-

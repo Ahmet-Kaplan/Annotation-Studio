@@ -23,9 +23,11 @@
  *= require "richText-annotator.css"
  *= require "annotator.touch.css"
  *= require "annotations"
+ *= require "catalog"
  *= require "ekko-lightbox.min"
  *= require "navbar-overrides.css"
- *= require "introjs.min"
+ *= require "anthologies"
+*= require "introjs.min"
  *= require "introjs-overrides"
  *= require "semantic-ui-transition.min"
  *= require "semantic-ui-dropdown"
@@ -34,7 +36,7 @@
  *= require "klaro"
  */
 
-html {
+ html {
   position: relative;
   min-height: 100%;
 }
@@ -338,7 +340,7 @@ ul#account-management-links li.list-group-item {
     display: none;
     margin:    0.2em 0 0.2em 0;
   }
-  
+
   .progressContainer .bar {
     height:  2.2em;
     padding: 0.5em;

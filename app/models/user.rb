@@ -11,14 +11,14 @@ class User < ApplicationRecord
   friendly_id :username, use: [:slugged, :history]
 
   acts_as_role_user
+  acts_as_taggable_on :rep_group, :rep_privacy, :rep_subgroup, :anthology_group
 
   has_many :documents
+  has_and_belongs_to_many :anthologies, join_table: 'users_anthologies'
 
-  has_many :memberships, :foreign_key => "user_id"
+	has_many :memberships, :foreign_key => "user_id"
   has_many :groups, through: :memberships
   accepts_nested_attributes_for :memberships
-
-
   # Doesn't handle missing values.
   def fullname
     "#{firstname} #{lastname}"
@@ -43,7 +43,7 @@ class User < ApplicationRecord
   end
 
   def self.all_tags()
-    tags = User.groups.map{|t| t.name}
+    tags = User.rep_group_counts.map{|t| t.name}
     return tags.sort!
   end
 
@@ -51,7 +51,13 @@ class User < ApplicationRecord
     roles.pluck(:name).include? 'admin'
   end
 
+  def teacher?
+    roles.pluck(:name).include? 'teacher'
+  end
+
   def self.find_for_wordpress_oauth2(auth, current)
+    Rails.logger.info "*****"
+    Rails.logger.info "the auth under the find is #{auth}"
     authed_user = User.where(email: auth.info.email.downcase).first_or_initialize do |user|
       user.firstname = auth.info.name.split(' ').first
       user.lastname = auth.info.name.split(' ').length > 1 ? auth.info.name.split(' ').last : " "

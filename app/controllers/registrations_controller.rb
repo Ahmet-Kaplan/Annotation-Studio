@@ -6,11 +6,11 @@ class RegistrationsController < Devise::RegistrationsController
 		@invitetoken = params[:invite_token]
     if @invitetoken && current_user
 
-      #make sure token is valid 
+      #make sure token is valid
       begin
         invite = Invite.find_by(token: @invitetoken)
-        
-        #check for expiration 
+
+        #check for expiration
         unless invite.expiration_date && (invite.expiration_date < Time.now)
           org =  invite.group #find the user group attached to the invite
           current_user.groups << org #add this user to the new user group as a member
@@ -28,7 +28,7 @@ class RegistrationsController < Devise::RegistrationsController
 
       rescue NoMethodError #if token is invalid, org will call .group on a nil class which returns this error
         flash[:error] = 'Invalid token'
-        
+
       end #end begin-rescue
 			redirect_to dashboard_path
 		else
@@ -36,7 +36,7 @@ class RegistrationsController < Devise::RegistrationsController
 		end
 	end
 
-	def create 
+	def create
 		super
 		if params[:invite_token] && resource.save
 			@invitetoken = params[:invite_token]
@@ -50,7 +50,7 @@ class RegistrationsController < Devise::RegistrationsController
 			resource.groups << @group
 
 			flash[:alert] = "Successfully joined group"
-			
+
 		elsif resource.save
 			g = Group.find_by(name: "Public")
 			if g
@@ -59,7 +59,7 @@ class RegistrationsController < Devise::RegistrationsController
 		end
 
 
-    end 
+    end
 
 	helper DeviseMailerUrlHelper
 	protected

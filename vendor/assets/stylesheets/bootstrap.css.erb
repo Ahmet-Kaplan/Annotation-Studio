@@ -5777,9 +5777,19 @@ button.close {
   line-height: 1.42857143;
 }
 .modal-body {
-  position: relative;
-  padding: 15px;
+    position: relative;
+    padding: 15px;
 }
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 .modal-footer {
   padding: 15px;
   text-align: right;
@@ -6563,3 +6573,4 @@ button.close {
     display: none !important;
   }
 }
+/*# sourceMappingURL=bootstrap.css.map */

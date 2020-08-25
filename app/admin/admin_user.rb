@@ -1,16 +1,16 @@
 ActiveAdmin.register AdminUser do
   permit_params :email, :password, :password_confirmation
- 
-  filter :email          
 
-  index do                            
-    column :email                     
-    column :current_sign_in_at        
-    column :last_sign_in_at           
-    column :sign_in_count             
-    actions                   
-  end            
-  
+  filter :email
+
+  index do
+    column :email
+    column :current_sign_in_at
+    column :last_sign_in_at
+    column :sign_in_count
+    actions
+  end
+
   show do |user|
     attributes_table do
       row :email
@@ -19,15 +19,15 @@ ActiveAdmin.register AdminUser do
       row :sign_in_count
     end
   end
-             
 
-  form do |f|                         
-    f.inputs "Admin Details" do       
+
+  form do |f|
+    f.inputs "Admin Details" do
       f.input :email
-      f.input :password               
-      f.input :password_confirmation  
+      f.input :password
+      f.input :password_confirmation
     end
-    f.actions do 
+    f.actions do
       f.action :submit
       f.action :cancel, :wrapper_html => { :class => "cancel" }
     end

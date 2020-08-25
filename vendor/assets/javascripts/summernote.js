@@ -3760,7 +3760,7 @@ var Editor = /** @class */ (function () {
             })(idx);
             this.context.memo('help.formatH' + idx, this.lang.help['formatH' + idx]);
         }
-
+        
         this.insertParagraph = this.wrapCommand(function () {
             _this.typing.insertParagraph(_this.editable);
         });
@@ -4713,7 +4713,7 @@ var CodeView = /** @class */ (function () {
     return CodeView;
 }());
 
-var EDITABLE_PADDING = 57;
+var EDITABLE_PADDING = 24;
 var Statusbar = /** @class */ (function () {
     function Statusbar(context) {
         this.$document = $$1(document);
@@ -7102,7 +7102,6 @@ $$1.summernote = $$1.extend($$1.summernote, {
         otherStaticBar: '',
         // toolbar
         toolbar: [
-            ['cleaner',['cleaner']],
             ['style', ['style']],
             ['font', ['bold', 'underline', 'clear']],
             ['fontname', ['fontname']],
@@ -7313,3 +7312,4 @@ $$1.summernote = $$1.extend($$1.summernote, {
 });
 
 })));
+//# sourceMappingURL=summernote.js.map

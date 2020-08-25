@@ -5,113 +5,126 @@ class UsersController < ApplicationController
     if params[:id].nil? # if there is no user id in params, show current one
       @user = current_user
     else
-      @user = User.where(:id => params[:id])
+      @user = User.find_by(slug:params[:id])
     end
-    @document_list = Document.select(:slug, :title) # for getting document name in annotations table.
-
-    whitelisted = params.permit(:docs, :page, :group)
-
-    per_page = 10
-    docs = helpers.getSharedDocs() #see application_helper.rb
-
-  #AUTOCOMPLETE
-
-    #for document search autocomplete (user's docs and shared group docs)
-    shared_t = docs.pluck(:title)
-    my_t = current_user.documents.pluck(:title)
-
-    @titleSuggestions = shared_t | my_t
-    @authorSuggestions = docs.pluck(:author) | current_user.documents.pluck(:author)
-    @groupSuggestions = current_user.groups.pluck(:name)
-
-  #END AUTOCOMPLETE
-    @sharedDocsCount = docs.size
-
-  #ajax 
-
-    #GROUP SORT AJAX 
-    @groupMode = params[:gPage]
-
-    owned = current_user.groups.where(owner_id: current_user.id).paginate(:page => whitelisted[:page], :per_page => per_page)
-    joined = current_user.groups.paginate(:page => whitelisted[:page], :per_page => per_page)
-
-    filter = params[:filter]
-    if filter == "timeASC"
-      @joinedGroups = joined.order('created_at ASC')
-      @mygroups = owned.order('created_at ASC') 
-    else
-      @joinedGroups = joined.order('created_at DESC')
-      @mygroups = owned.order('created_at DESC') 
-    end
-
-    #DOCUMENT SORT AJAX
-    @docMode = params[:dPage]
-    shared = docs.paginate(:page => whitelisted[:page], :per_page => per_page)
-    mine = current_user.documents.paginate(:page => whitelisted[:page], :per_page => per_page)
-
-    case params[:dFilter]
-      when "timeASC"
-        @sharedDocs = shared.order('created_at ASC')
-        @myDocs = mine.order('created_at ASC')
-
-      when "A-Z"
-        @sharedDocs = shared.order('title ASC')
-        @myDocs = mine.order('title ASC')
-
-      when "Z-A"
-        @sharedDocs = shared.order('title DESC')
-        @myDocs = mine.order('title DESC')
-
-      else #"timeDESC" is default
-        @sharedDocs = shared.order('created_at DESC')
-        @myDocs = mine.order('created_at DESC')
-
-    end #case
-
-    #toggle ajax option for show.js.erb
-    @ajaxOption = params[:dFilter] ? "document" : "group"
-
-  #END AJAX 
-
-    #handling invite_token. need to put here because invite_token is a param of dashboard route
-    @invitetoken = params[:invite_token]
-    if @invitetoken 
-
-      #make sure token is valid 
-      begin
-        invite = Invite.find_by(token: @invitetoken)
-        
-        #check for expiration 
-        unless invite.expiration_date && (invite.expiration_date < Time.now)
-          org =  invite.group #find the user group attached to the invite
-          current_user.groups << org #add this user to the new user group as a member
-          flash[:alert] = 'Successfully joined group!'
-
-        else
-          flash[:error] = 'Token expired. please get new token'
-          redirect_to dashboard_path
-          return
-
-        end #end unless
-
-      rescue ActiveRecord::RecordNotUnique
-        flash[:error] = 'Already in group'
-
-      rescue NoMethodError #if token is invalid, org will call .group on a nil class which returns this error
-        flash[:error] = 'Invalid token'
-        
-      end #end begin-rescue
-      redirect_to dashboard_path
-    end #end if 
-   
+    @document_list = Document.all # for getting document name in annotations table.
     respond_to do |format|
       format.html # show.html.erb
-      format.json {render json: @user}
-      format.js #ajax
+      format.json { render json: @user }
     end
 
     gon.rabl template: 'app/views/users/show.rabl', as: 'user'
   end
+
+  def remove_user
+    respond_to do |format|
+      @anthology = Anthology.find(params[:anthology_id])
+      Rails.logger.info "**** entering remove doc"
+      @user = User.find(params[:user_id])
+      Rails.logger.info "The user is #{@user.inspect}"
+
+      if @anthology.present? && @user.present? && @user.anthologies.delete(@anthology) && @user.anthology_group_list.remove(@anthology.name)
+
+        format.html {redirect_to users_path(anthology_id: @anthology.id), notice: "The user #{@user.fullname} was successfully removed from this anthology"}
+      else
+        format.html { redirect_to users_path(anthology_id: @anthology.id), error: "There was a problem removing the user from this anthology" }
+      end
+    end
+  end
+
+  def anthology_add
+    successful = true
+    users = []
+    begin
+      @anthology = Anthology.find(params[:anthology])
+      params[:user_ids].each do |user_id|
+        user = User.find(user_id)
+        unless user.anthologies.include?(@anthology)
+          user.anthology_group_list.add(@anthology.name)
+          user.anthologies << @anthology
+          users << user.fullname
+        end
+        user.save
+      end
+    rescue
+      successful = false
+    end
+    respond_to do |format|
+      if successful
+        if users.count == 1
+          users_string = " #{users.first}"
+        elsif users.count == 2
+          users_string = "s #{users.first} and #{users.last}"
+        elsif users.count > 2
+          users_string = "s #{users[ 0..-2 ].join(", ")} and #{users.last}"
+        end
+        format.html { redirect_to users_path(anthology_id: @anthology.id), notice: "You added the user#{users_string} to this anthology" }
+      else
+        format.html { redirect_to users_path(anthology_id: @anthology.id), alert: "There was a problem adding users to the anthology selected"}
+      end
+    end
+    # redirect_to anthology_path(Anthology.first)
+  end
+  def index
+    @anthologies = current_user.anthologies.map {|ant| ant.id}.uniq
+    @anthologies = [@anthologies, Anthology.where(user_id: current_user.id).pluck(:id) ]
+    @anthologies = @anthologies.flatten.uniq
+    @anthologies = Anthology.all.map {|ant| ant if @anthologies.include?(ant.id)}
+    @anthologies = @anthologies.compact
+    if params[:anthology_id].present?
+      @anthology = Anthology.find(params[:anthology_id])
+    else
+      @anthology = Anthology.where(user_id: current_user.id).first
+    end
+    @users = []
+    per_page = 20
+    @search_users_count = 0
+    if ( params.has_key?(:lastname) || params.has_key?(:email) || params.has_key?(:first_name) ) && ( !(params.has_key?(:users)) || params[:users] == 'search_results' )
+      user_set = 'search_results'
+    elsif params[:users].present?
+      user_set = params[:users]
+    else
+      user_set = 'all'
+    end
+    [:firstname, :lastname, :email].each do |query|
+      if params.has_key?(query) && params[query].present?
+        @search_users_count = User.where("lower(#{query}) LIKE ?", "%#{params[query]}%").count
+      end
+    end
+    @tab_state = { user_set => 'active' }
+    @all_users_count = User.all.count
+    if user_set == 'all'
+      @users = User.paginate(:page => params[:page], :per_page => per_page ).order("created_at DESC")
+    elsif user_set == 'search_results'
+      Rails.logger.info "***"
+      Rails.logger.info "entering search results"
+      [:firstname, :lastname, :email].each do |query|
+        if params.has_key?(query) && params[query].present?
+            @users = User.where("lower(#{query}) LIKE ?", "%#{params[query]}%")
+          end
+        end
+      if @users.present?
+        @users = @users.paginate(:page => params[:page], :per_page => per_page).order('created_at DESC')
+      end
+    end
+  # add search parameters if they are there
+
+
+
+    respond_to do |format|
+      format.html # index.html.erb
+      format.json { render json: @documents }
+    end
+  end
+  # def index
+  #   @anthologies = Anthology.all
+  #   if params[:anthology_id].present?
+  #     @anthology = Anthology.find(params[:anthology_id])
+  #   else
+  #     @anthology = Anthology.first
+  #   end
+  #   @users = User.all
+  # end
 
   def edit
     @user = User.where(:id => params[:id])
@@ -119,7 +132,7 @@ class UsersController < ApplicationController
 
   def users_params
     params.require(:user).permit(:email, :password, :agreement, :affiliation, :password_confirmation,
-                                 :remember_me, :firstname, :lastname, :first_name_last_initial, 
-                                 :username, :nav, :filter, :groups)
+                                 :remember_me, :firstname, :lastname, :rep_privacy_list, :rep_group_list,
+                                 :rep_subgroup_list, :first_name_last_initial, :username)
   end
 end

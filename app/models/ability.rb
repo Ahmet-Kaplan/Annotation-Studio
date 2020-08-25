@@ -11,29 +11,34 @@ class Ability
 
     if user.has_role? :admin
       can :manage, :all
-      can :publicize, Document, { :user_id => user.id }
 
     elsif user.has_role? :teacher
       cannot :manage, Document do |tors|
-        if tors.user.nil?  # This has been driving me insane.
+        if tors.user.nil?
           false
         else
           tors.user.id == user.id
         end
       end
-      can :create, Document
-      can [:read, :update, :publish, :archive, :preview, :export, :set_default_state, :snapshot], Document, { :user_id => user.id }
+      can [:read, :create], Document
+      can [:read, :update, :annotatable, :review, :publish, :archive, :preview, :post_to_cove, :export, :set_default_state, :snapshot, :anthology_add], Document, { :user_id => user.id }
+      cannot :manage, Anthology
+      can :manage, Anthology, { :user_id => user.id }
+      can [:read], Anthology
       can :destroy, Document, { :user_id => user.id, :published? => false }
 
     elsif user.has_role? :student
       cannot :manage, Document
-      can :create, Document
-      can [:read, :update, :publish, :archive], Document, { :user_id => user.id }
+      can [:read, :create], Document
+      can [:read, :update, :anthology_add], Document, { :user_id => user.id }
+      cannot :manage, Anthology
+      can :manage, Anthology, { :user_id => user.id }
+      can [:read], Anthology
       can :destroy, Document, { :user_id => user.id, :published? => false }
       can :read, Document do |tors|
-        !(user.groups & tors.groups).empty?
+        !(user.rep_group_list & tors.rep_group_list).empty?
       end
-
+      cannot :manage, User
     else
       cannot :manage, :all
       can :read, Document, { :public? => true }
