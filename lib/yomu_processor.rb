@@ -17,5 +17,7 @@ class YomuProcessor
     pp @original_state
 		pp @document.state
 		@document.save
+    @document.state = @original_state
+    @document.save
   end
 end

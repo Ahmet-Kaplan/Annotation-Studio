@@ -59,7 +59,7 @@ bootstrap_main_application() {
 
   echo 'creating local application.yml'
 
-  cat > config/application.yml <<EOF
+  cat > ./config/application.yml <<EOF
 
 development:
   PAGE_TITLE:                             Annotation Studio Dev
